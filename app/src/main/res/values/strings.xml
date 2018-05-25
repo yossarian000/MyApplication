@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">MyThing</string>
+    <string name="tab_text_1">Overview</string>
+    <string name="tab_text_2">Zones</string>
+    <string name="tab_text_3">Functions</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_addnew">Add New</string>
+    <string name="toast_addnew">you did it! - pushed</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="textView">mythingy</string>
+    <string name="myPopup01">Delete...</string>
+    <string name="myPopup02">Edit...</string>
+    <string name="myPopup03">Info...</string>
+</resources>
