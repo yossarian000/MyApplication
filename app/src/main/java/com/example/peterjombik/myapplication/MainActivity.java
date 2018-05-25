@@ -2,6 +2,7 @@ package com.example.peterjombik.myapplication;
 
 import android.content.ClipData;
 import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -23,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -36,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
 import static com.example.peterjombik.myapplication.R.id.all;
 import static com.example.peterjombik.myapplication.R.id.fragment_gridview;
 import static com.example.peterjombik.myapplication.R.id.fragment_gridview;
@@ -183,8 +186,8 @@ public class MainActivity extends AppCompatActivity {
 
                 Long selectedItem = adapterView.getItemIdAtPosition(i);
 
-                Toast toast = Toast.makeText(getContext(), selectedItem.toString(), Toast.LENGTH_SHORT);
-                toast.show();
+                //Toast toast = Toast.makeText(getContext(), selectedItem.toString(), Toast.LENGTH_SHORT);
+                //toast.show();
             }
         };
 
@@ -202,8 +205,16 @@ public class MainActivity extends AppCompatActivity {
 
                         String itemTitle = item.getTitle().toString();
 
+                        //if (itemTitle.equals("@strings/myPopup01")){
                         if (itemTitle.equals("Delete...")){
                             myItemList.remove(myItemList.get(selectedItem));
+                        }
+
+                        //else if (itemTitle.equals("@strings/myPopup02")){
+                        if (itemTitle.equals("Edit...")){
+                            Intent intent = new Intent(getContext(), ItemConfiguration.class);
+
+                            startActivity(intent);
                         }
 
                         adapter.notifyDataSetChanged();
