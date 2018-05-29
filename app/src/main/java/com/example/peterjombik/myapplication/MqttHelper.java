@@ -23,8 +23,6 @@ public class MqttHelper {
     final String clientId = "mqttMyThingxcwer1278";
     final String subscriptionTopic = "/sensors/#";
 
-    //final List<String> subscriptionTopic;
-
 
     final String username = "";
     final String password = "";

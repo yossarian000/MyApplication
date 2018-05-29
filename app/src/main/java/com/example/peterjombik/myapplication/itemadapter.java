@@ -76,8 +76,8 @@ public class itemadapter extends BaseAdapter {
             listViewHolder = (ViewHolder)convertView.getTag();
         }
 
-        listViewHolder.textInListView.setText(myList.get(position).getContent());
-        listViewHolder.dataInListView.setText(myList.get(position).getDataValue());
+        listViewHolder.textInListView.setText(myList.get(position).getName());
+        listViewHolder.dataInListView.setText(myList.get(position).getTopic());
 
         int imageResourceId = this.mContext.getResources().getIdentifier(myList.get(position).getImageResource(), "drawable", this.mContext.getPackageName());
         listViewHolder.imageInListView.setImageResource(imageResourceId);

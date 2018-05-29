@@ -11,4 +11,47 @@
     <string name="myPopup01">Delete...</string>
     <string name="myPopup02">Edit...</string>
     <string name="myPopup03">Info...</string>
+
+    <!-- Item configuration -->
+    <string name="itemconfig_title">Thing configuration</string>
+
+    <string name="itemconfig_topic">Topic</string>
+    <string name="itemconfig_hint_topic">/topic/subtopic</string>
+    <string name="itemconfig_itemname">Name</string>
+    <string name="itemconfig_hint_itemname">Name/ID</string>
+    <string name="itemconfig_itemzone">Zone</string>
+    <string name="itemconfig_hint_itemzone">Livingroom</string>
+    <string name="itemconfig_itemtype">Type</string>
+    <string name="itemconfig_hint_itemtype">Blinds</string>
+
+
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="Typelist_01">Lamp</string>
+    <string name="Typelist_02">Temperature</string>
+    <string name="Typelist_03">Blinds</string>
+    <string name="Typelist_04">Socket</string>
+    <string name="Typelist_05">Valve</string>
+
+    <string name="Zonelist_01">Livingroom</string>
+    <string name="Zonelist_02">Bedroom</string>
+    <string name="Zonelist_03">Kitchen</string>
+    <string name="Zonelist_04">Garage</string>
+    <string name="Zonelist_05">Garden</string>
+
+    <string-array name="Typelist">
+        <item>@string/Typelist_01</item>
+        <item>@string/Typelist_02</item>
+        <item>@string/Typelist_03</item>
+        <item>@string/Typelist_04</item>
+        <item>@string/Typelist_05</item>
+    </string-array>
+
+    <string-array name="Zonelist">
+        <item>@string/Zonelist_01</item>
+        <item>@string/Zonelist_02</item>
+        <item>@string/Zonelist_03</item>
+        <item>@string/Zonelist_04</item>
+        <item>@string/Zonelist_05</item>
+    </string-array>
 </resources>

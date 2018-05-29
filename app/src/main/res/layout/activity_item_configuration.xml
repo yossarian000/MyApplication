@@ -6,20 +6,130 @@
     android:layout_height="match_parent"
     tools:context=".ItemConfiguration">
 
-    <EditText
-        android:id="@+id/mything_topicname"
-        android:layout_width="wrap_content"
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/Itemconfig_appbar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:paddingTop="@dimen/appbar_padding_top"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/Itemconfig_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_weight="1"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:navigationIcon="?attr/actionModeCloseDrawable"
+            app:title="@string/itemconfig_title">
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <EditText
+        android:id="@+id/mything_topicnameinput"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
+        android:hint="@string/itemconfig_hint_topic"
         android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toEndOf="@+id/mything_topicname"
+        app:layout_constraintTop_toBottomOf="@+id/mything_idinput" />
+
+    <Spinner
+        android:id="@+id/mything_zoneinput"
+        android:layout_width="237dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="@string/itemconfig_hint_itemzone"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toEndOf="@+id/mything_zone"
+        app:layout_constraintTop_toBottomOf="@+id/mything_typeinput" />
+
+    <Spinner
+        android:id="@+id/mything_typeinput"
+        android:layout_width="237dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="@string/itemconfig_hint_itemtype"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toEndOf="@+id/mything_type"
+        app:layout_constraintTop_toBottomOf="@+id/mything_topicnameinput" />
+
+    <TextView
+        android:id="@+id/mything_topicname"
+        android:layout_width="115dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:text="@string/itemconfig_topic"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/mything_id" />
+
+    <TextView
+        android:id="@+id/mything_zone"
+        android:layout_width="115dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:text="@string/itemconfig_itemzone"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mything_type" />
+
+    <TextView
+        android:id="@+id/mything_type"
+        android:layout_width="115dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:text="@string/itemconfig_itemtype"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mything_topicname" />
+
+    <TextView
+        android:id="@+id/mything_id"
+        android:layout_width="115dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:gravity="center_vertical"
+        android:text="@string/itemconfig_itemname"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Itemconfig_appbar" />
+
+    <EditText
+        android:id="@+id/mything_idinput"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:hint="@string/itemconfig_hint_itemname"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toEndOf="@+id/mything_id"
+        app:layout_constraintTop_toBottomOf="@+id/Itemconfig_appbar" />
+
 </android.support.constraint.ConstraintLayout>

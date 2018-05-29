@@ -1,11 +1,8 @@
 package com.example.peterjombik.myapplication;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -21,10 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -35,15 +29,8 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
-import static com.example.peterjombik.myapplication.R.id.all;
 import static com.example.peterjombik.myapplication.R.id.fragment_gridview;
-import static com.example.peterjombik.myapplication.R.id.fragment_gridview;
-import static com.example.peterjombik.myapplication.R.id.parent;
-import static com.example.peterjombik.myapplication.R.id.section_label;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,17 +49,11 @@ public class MainActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
     private int mycounter = 0;
-
-    static ArrayList<ItemObject> myItemList = new ArrayList<ItemObject>();
-
+    public static ArrayList<ItemObject> myItemList = new ArrayList<ItemObject>();
     public static itemadapter adapter;
-
     public static String DataValue;
 
-    TextView DataReceived;
-
-    MqttHelper mqttHelper;
-
+    public static MqttHelper mqttHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,23 +123,27 @@ public class MainActivity extends AppCompatActivity {
         }
         if (id == R.id.action_addnew) {
 
-            if (mycounter == 0){
-                myItemList.add(new ItemObject(content, dataValue, "baseline_android_black_36dp"));
-            }
-            else if (mycounter == 1){
-                myItemList.add(new ItemObject(content, dataValue,"baseline_android_black_36dp"));
-            }
-            else if (mycounter == 2){
-                myItemList.add(new ItemObject(content,dataValue, "baseline_android_black_36dp"));
-            }
-            else if (mycounter == 3){
-                myItemList.add(new ItemObject(content, dataValue,"baseline_android_black_36dp"));
-            }
-            else{
-                myItemList.add(new ItemObject(content, dataValue,"baseline_android_black_36dp"));
-            }
+            Intent intent = new Intent(context, ItemConfiguration.class);
 
-            adapter.notifyDataSetChanged();
+            startActivity(intent);
+
+//            if (mycounter == 0){
+//                myItemList.add(new ItemObject(content, dataValue, "baseline_android_black_36dp"));
+//            }
+//            else if (mycounter == 1){
+//                myItemList.add(new ItemObject(content, dataValue,"baseline_android_black_36dp"));
+//            }
+//            else if (mycounter == 2){
+//                myItemList.add(new ItemObject(content,dataValue, "baseline_android_black_36dp"));
+//            }
+//            else if (mycounter == 3){
+//                myItemList.add(new ItemObject(content, dataValue,"baseline_android_black_36dp"));
+//            }
+//            else{
+//                myItemList.add(new ItemObject(content, dataValue,"baseline_android_black_36dp"));
+//            }
+//
+//            adapter.notifyDataSetChanged();
 
             //Toast toast = Toast.makeText(context, text, duration);
             //toast.show();
@@ -194,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
         AdapterView.OnItemLongClickListener myOnItemLongclickListener = new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
                 final int selectedItem = ((int) adapterView.getItemIdAtPosition(i));
 
                 PopupMenu myPopup = new PopupMenu(getContext(), view);
@@ -214,6 +200,21 @@ public class MainActivity extends AppCompatActivity {
                         if (itemTitle.equals("Edit...")){
                             Intent intent = new Intent(getContext(), ItemConfiguration.class);
 
+                            Bundle mBundle = new Bundle();
+
+                            Integer id = selectedItem;
+                            String name = MainActivity.myItemList.get(selectedItem).getName().toString();
+                            String zone = MainActivity.myItemList.get(selectedItem).getZone().toString();
+                            String type = MainActivity.myItemList.get(selectedItem).getType().toString();
+                            String topic = MainActivity.myItemList.get(selectedItem).getTopic().toString();
+
+                            mBundle.putInt("id", id);
+                            mBundle.putString("name", name);
+                            mBundle.putString("topic", topic);
+                            mBundle.putString("zone", zone);
+                            mBundle.putString("type", type);
+
+                            intent.putExtras(mBundle);
                             startActivity(intent);
                         }
 
@@ -334,13 +335,13 @@ public class MainActivity extends AppCompatActivity {
                 switch (topic){
                     case "/sensors/temp02":{
                         myItemList.get(0).setDataValue(mqttMessage.toString());
-                        myItemList.get(0).setContent(topic);
+                        myItemList.get(0).setId(topic);
                         adapter.notifyDataSetChanged();
                         break;
                     }
                     case "/sensors/hum01":{
                         myItemList.get(1).setDataValue(mqttMessage.toString());
-                        myItemList.get(1).setContent(topic);
+                        myItemList.get(1).setId(topic);
                         adapter.notifyDataSetChanged();
                         break;
                     }
@@ -349,6 +350,7 @@ public class MainActivity extends AppCompatActivity {
                 //DataReceived.setText(mqttMessage.toString());
                 //myItemList.get(0).setDataValue(mqttMessage.toString());
                 //DataValue = mqttMessage.toString();
+
                 adapter.notifyDataSetChanged();
             }
 
