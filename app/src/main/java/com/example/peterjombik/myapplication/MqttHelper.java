@@ -21,7 +21,7 @@ public class MqttHelper {
     final String serverUri = "tcp://kojo.servehttp.com:1883";
 
     final String clientId = "mqttMyThingxcwer1278";
-    final String subscriptionTopic = "/sensors/#";
+    final String subscriptionTopic = "";
 
 
     final String username = "";

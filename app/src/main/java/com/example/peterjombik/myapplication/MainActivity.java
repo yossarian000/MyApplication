@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
@@ -169,10 +170,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                Long selectedItem = adapterView.getItemIdAtPosition(i);
+                //int selectedItem = adapterView.getSelectedItemPosition();
 
                 //Toast toast = Toast.makeText(getContext(), selectedItem.toString(), Toast.LENGTH_SHORT);
-                //toast.show();
+                Toast toast = Toast.makeText(getContext(), myItemList.get(i).getName().toString(), Toast.LENGTH_SHORT);
+                toast.show();
             }
         };
 
@@ -193,7 +195,14 @@ public class MainActivity extends AppCompatActivity {
 
                         //if (itemTitle.equals("@strings/myPopup01")){
                         if (itemTitle.equals("Delete...")){
+                            try {
+                                MainActivity.mqttHelper.mqttAndroidClient.unsubscribe(myItemList.get(selectedItem).getTopic().toString());
+                            }
+                            catch (MqttException ex){
+
+                            };
                             myItemList.remove(myItemList.get(selectedItem));
+
                         }
 
                         //else if (itemTitle.equals("@strings/myPopup02")){
@@ -271,8 +280,6 @@ public class MainActivity extends AppCompatActivity {
                     rootView = inflater.inflate(R.layout.fragment_gridview, container, false);
                     GridView gridview = (GridView) rootView.findViewById(fragment_gridview);
 
-                    //myItemList.add(new ItemObject("hehe", "ic_launcher_foreground"));
-
                     gridview.setAdapter(adapter);
 
                     gridview.setOnItemClickListener(myOnItemclickListener);
@@ -332,26 +339,32 @@ public class MainActivity extends AppCompatActivity {
             public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
                 Log.w("Debug",mqttMessage.toString());
 
-                switch (topic){
-                    case "/sensors/temp02":{
-                        myItemList.get(0).setDataValue(mqttMessage.toString());
-                        myItemList.get(0).setId(topic);
+                int itemlistsize = myItemList.size();
+
+                for (int i = 0; i< itemlistsize; i++){
+                    if (myItemList.get(i).getTopic().toString().equals(topic)){
+                        myItemList.get(i).setDataValue(mqttMessage.toString());
                         adapter.notifyDataSetChanged();
-                        break;
-                    }
-                    case "/sensors/hum01":{
-                        myItemList.get(1).setDataValue(mqttMessage.toString());
-                        myItemList.get(1).setId(topic);
-                        adapter.notifyDataSetChanged();
-                        break;
                     }
                 }
-
+//                switch (topic){
+//                    case "/sensors/temp02":{
+//                        myItemList.get(0).setDataValue(mqttMessage.toString());
+//                        //myItemList.get(0).setId(topic);
+//                        adapter.notifyDataSetChanged();
+//                        break;
+//                    }
+//                    case "/sensors/hum01":{
+//                        myItemList.get(1).setDataValue(mqttMessage.toString());
+//                        //myItemList.get(1).setId(topic);
+//                        adapter.notifyDataSetChanged();
+//                        break;
+//                    }
+//                }
                 //DataReceived.setText(mqttMessage.toString());
                 //myItemList.get(0).setDataValue(mqttMessage.toString());
                 //DataValue = mqttMessage.toString();
-
-                adapter.notifyDataSetChanged();
+                //adapter.notifyDataSetChanged();
             }
 
             @Override

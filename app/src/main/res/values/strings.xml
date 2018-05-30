@@ -23,7 +23,7 @@
     <string name="itemconfig_hint_itemzone">Livingroom</string>
     <string name="itemconfig_itemtype">Type</string>
     <string name="itemconfig_hint_itemtype">Blinds</string>
-
+    <string name="itemconfig_actor">Button</string>
 
     <string name="title_activity_settings">Settings</string>
 
@@ -32,6 +32,7 @@
     <string name="Typelist_03">Blinds</string>
     <string name="Typelist_04">Socket</string>
     <string name="Typelist_05">Valve</string>
+    <string name="Typelist_06">Humidity</string>
 
     <string name="Zonelist_01">Livingroom</string>
     <string name="Zonelist_02">Bedroom</string>
@@ -41,7 +42,15 @@
 
     <string-array name="Typelist">
         <item>@string/Typelist_01</item>
+        <item>@string/Typelist_03</item>
+        <item>@string/Typelist_04</item>
+        <item>@string/Typelist_05</item>
         <item>@string/Typelist_02</item>
+        <item>@string/Typelist_06</item>
+    </string-array>
+
+    <string-array name="Typelist_actor">
+        <item>@string/Typelist_01</item>
         <item>@string/Typelist_03</item>
         <item>@string/Typelist_04</item>
         <item>@string/Typelist_05</item>

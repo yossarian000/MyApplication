@@ -13,8 +13,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 import java.util.ArrayList;
 
@@ -25,7 +30,12 @@ public class ItemConfiguration extends AppCompatActivity {
     private EditText name;
     private Spinner staticTypeSpinner;
     private Spinner staticZoneSpinner;
+    private Switch actor;
     private Boolean itemedited = false;
+    private Context mContext;
+
+    private ArrayAdapter<CharSequence> staticTypeAdapter;
+    private ArrayAdapter<CharSequence> staticZoneAdapter;
 
     MqttHelper mqttHelper;
 
@@ -49,9 +59,11 @@ public class ItemConfiguration extends AppCompatActivity {
 
         topic = findViewById(R.id.mything_topicnameinput);
         name = findViewById(R.id.mything_idinput);
+        actor = findViewById(R.id.mything_actor);
+
         // Create an ArrayAdapter using the string array and a default spinner
-        ArrayAdapter<CharSequence> staticTypeAdapter = ArrayAdapter.createFromResource(this, R.array.Typelist, android.R.layout.simple_spinner_item);
-        ArrayAdapter<CharSequence> staticZoneAdapter = ArrayAdapter.createFromResource(this, R.array.Zonelist, android.R.layout.simple_spinner_item);
+        staticTypeAdapter = ArrayAdapter.createFromResource(this, R.array.Typelist, android.R.layout.simple_spinner_item);
+        staticZoneAdapter = ArrayAdapter.createFromResource(this, R.array.Zonelist, android.R.layout.simple_spinner_item);
 
         // Specify the layout to use when the list of choices appears
         staticTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -60,6 +72,26 @@ public class ItemConfiguration extends AppCompatActivity {
         // Apply the adapter to the spinner
         staticTypeSpinner.setAdapter(staticTypeAdapter);
         staticZoneSpinner.setAdapter(staticZoneAdapter);
+
+        actor.setOnClickListener(new AdapterView.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                if (actor.isChecked()){
+//                    staticTypeAdapter = ArrayAdapter.createFromResource(getApplicationContext(), R.array.Typelist_actor, android.R.layout.simple_spinner_item);
+//                    staticTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                    staticTypeSpinner.setSelection(0);
+//                    staticTypeSpinner.setAdapter(staticTypeAdapter);
+//                    staticTypeAdapter.notifyDataSetChanged();
+//                }
+//                else{
+//                    staticTypeAdapter = ArrayAdapter.createFromResource(getApplicationContext(), R.array.Typelist, android.R.layout.simple_spinner_item);
+//                    staticTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                    staticTypeSpinner.setSelection(0);
+//                    staticTypeSpinner.setAdapter(staticTypeAdapter);
+//                    staticTypeAdapter.notifyDataSetChanged();
+//                }
+            }
+        });
 
         staticTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -135,15 +167,42 @@ public class ItemConfiguration extends AppCompatActivity {
                 MainActivity.myItemList.get(id).setTopic(topic.getText().toString());
                 MainActivity.myItemList.get(id).setZone(myZone);
                 MainActivity.myItemList.get(id).setType(myType);
+                MainActivity.myItemList.get(id).setActor(actor.isChecked());
 
-                //MainActivity.mqttHelper.mqttAndroidClient.subscribe("/sensors/hum02", 0);
+                try {
+                    //MainActivity.mqttHelper.mqttAndroidClient.subscribe("/sensors/hum01", 0);
+                    MainActivity.mqttHelper.mqttAndroidClient.subscribe(topic.getText().toString(), 0);
+                }
+                catch (MqttException ex){
 
-                MainActivity.adapter.notifyDataSetChanged();
+                }
+                //MainActivity.adapter.notifyDataSetChanged();
             }
             else {
-                MainActivity.myItemList.add(new ItemObject("", name.getText().toString(), "", "baseline_android_black_36dp", topic.getText().toString(), myZone, myType));
-                MainActivity.adapter.notifyDataSetChanged();
+
+                String imgsrc = "";
+
+                switch (myType) {
+                    case "Lamp":
+                        imgsrc = "outline_wb_incandescent_24";
+                        break;
+                    case "Temperature":
+                        imgsrc = "outline_pets_24";
+                        break;
+                    case "Blinds":
+                        imgsrc = "outline_security_24";
+                        break;
+                    case "Socket":
+                        imgsrc = "outline_power_24";
+                        break;
+                }
+
+                MainActivity.myItemList.add(new ItemObject("", name.getText().toString(), "",
+                        imgsrc, topic.getText().toString(), myZone, myType, actor.isChecked()));
+
             }
+
+            MainActivity.adapter.notifyDataSetChanged();
 
             finish();
 
