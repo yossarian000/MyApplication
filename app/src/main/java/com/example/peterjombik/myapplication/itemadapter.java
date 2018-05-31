@@ -77,18 +77,19 @@ public class itemadapter extends BaseAdapter {
         }
 
         if (myList.get(position).getActor()){
-            listViewHolder.textInListView.setVisibility(View.INVISIBLE);
+            listViewHolder.dataInListView.setVisibility(View.INVISIBLE);
             listViewHolder.imageInListView.setVisibility(View.VISIBLE);
             int imageResourceId = this.mContext.getResources().getIdentifier(myList.get(position).getImageResource(), "drawable", this.mContext.getPackageName());
             listViewHolder.imageInListView.setImageResource(imageResourceId);
         }
         else{
-            listViewHolder.textInListView.setVisibility(View.VISIBLE);
+            listViewHolder.dataInListView.setVisibility(View.VISIBLE);
             listViewHolder.imageInListView.setVisibility(View.INVISIBLE);
+            listViewHolder.dataInListView.setText(myList.get(position).getDataValue());
         }
 
         listViewHolder.textInListView.setText(myList.get(position).getName());
-        listViewHolder.dataInListView.setText(myList.get(position).getDataValue());
+
 
 //        int imageResourceId = this.mContext.getResources().getIdentifier(myList.get(position).getImageResource(), "drawable", this.mContext.getPackageName());
 //        listViewHolder.imageInListView.setImageResource(imageResourceId);

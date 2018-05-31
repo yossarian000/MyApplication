@@ -1,7 +1,10 @@
 package com.example.peterjombik.myapplication;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,13 +27,18 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.example.peterjombik.myapplication.R.id.fragment_gridview;
 
 public class MainActivity extends AppCompatActivity {
@@ -80,6 +88,19 @@ public class MainActivity extends AppCompatActivity {
 
         //DataReceived = (TextView) findViewById(R.id.DataReceived);
 
+//
+//        SharedPreferences appsharedprefs = getSharedPreferences("KoJo", Context.MODE_PRIVATE);
+//        try {
+//            Gson gson = new Gson();
+//            String json = appsharedprefs.getString("MyObject", "");
+//            myItemList = gson.fromJson(json, (Type) myItemList);
+//            //userList = (ArrayList<ItemObject>) ObjectSerializer.deserialize(prefs.getString("ObjectList", ObjectSerializer.serialize(new ArrayList<ItemObject>())));
+//        }
+//        catch (IOException e){
+//
+//        }
+
+
         startMqtt();
 
         //FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -120,6 +141,25 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+//            ArrayList userList   = new ArrayList();
+//            userList.add(new Users());
+//            userList.add(new Users());
+            SharedPreferences prefs = getSharedPreferences("KoJo", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            Gson gson = new Gson();
+            String json = gson.toJson(myItemList);
+            editor.putString("MyObject", json);
+            editor.commit();
+
+            try {
+                editor.putString("ObjectList", ObjectSerializer.serialize(myItemList));
+                //editor.putString("ObjectList", ObjectSerializer.serialize("asdasdasd"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            editor.commit();
+
             return true;
         }
         if (id == R.id.action_addnew) {
@@ -169,12 +209,22 @@ public class MainActivity extends AppCompatActivity {
         AdapterView.OnItemClickListener myOnItemclickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
                 //int selectedItem = adapterView.getSelectedItemPosition();
 
-                //Toast toast = Toast.makeText(getContext(), selectedItem.toString(), Toast.LENGTH_SHORT);
-                Toast toast = Toast.makeText(getContext(), myItemList.get(i).getName().toString(), Toast.LENGTH_SHORT);
-                toast.show();
+                String message = "1";
+
+                if (!myItemList.get(i).getPublish().toString().equals("")) {
+                    try {
+                        MainActivity.mqttHelper.mqttAndroidClient.publish(myItemList.get(i).getPublish().toString(), new MqttMessage(message.getBytes()) );
+
+                    } catch (MqttException e) {
+                        e.printStackTrace();
+                    }
+
+                    //Toast toast = Toast.makeText(getContext(), selectedItem.toString(), Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(getContext(), "published 1", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
             }
         };
 
@@ -216,12 +266,16 @@ public class MainActivity extends AppCompatActivity {
                             String zone = MainActivity.myItemList.get(selectedItem).getZone().toString();
                             String type = MainActivity.myItemList.get(selectedItem).getType().toString();
                             String topic = MainActivity.myItemList.get(selectedItem).getTopic().toString();
+                            Boolean actor = MainActivity.myItemList.get(selectedItem).getActor();
+                            String publish = MainActivity.myItemList.get(selectedItem).getPublish();
 
                             mBundle.putInt("id", id);
                             mBundle.putString("name", name);
                             mBundle.putString("topic", topic);
                             mBundle.putString("zone", zone);
                             mBundle.putString("type", type);
+                            mBundle.putBoolean("actor", actor);
+                            mBundle.putString("publish", publish);
 
                             intent.putExtras(mBundle);
                             startActivity(intent);
@@ -373,5 +427,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 }
