@@ -23,11 +23,13 @@ import android.view.ViewGroup;
 
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
@@ -36,7 +38,10 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.example.peterjombik.myapplication.R.id.fragment_gridview;
@@ -84,22 +89,24 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-        adapter = new itemadapter(this, android.R.layout.simple_list_item_1, myItemList);
-
         //DataReceived = (TextView) findViewById(R.id.DataReceived);
+        try {
+            SharedPreferences appsharedprefs = getSharedPreferences("KoJo", Context.MODE_PRIVATE);
+            Gson gson = new Gson();
+            String json = appsharedprefs.getString("MyObject", "");
+            Type type = new TypeToken<ArrayList<ItemObject>>() {
+            }.getType();
+            ArrayList<ItemObject> test = gson.fromJson(json, type);
+            //userList = (ArrayList<ItemObject>) ObjectSerializer.deserialize(prefs.getString("ObjectList", ObjectSerializer.serialize(new ArrayList<ItemObject>())));
+            if (test != null) {
+                myItemList = test;
+            }
+        }
+        catch (ClassCastException e){
 
-//
-//        SharedPreferences appsharedprefs = getSharedPreferences("KoJo", Context.MODE_PRIVATE);
-//        try {
-//            Gson gson = new Gson();
-//            String json = appsharedprefs.getString("MyObject", "");
-//            myItemList = gson.fromJson(json, (Type) myItemList);
-//            //userList = (ArrayList<ItemObject>) ObjectSerializer.deserialize(prefs.getString("ObjectList", ObjectSerializer.serialize(new ArrayList<ItemObject>())));
-//        }
-//        catch (IOException e){
-//
-//        }
+        }
 
+        adapter = new itemadapter(this, android.R.layout.simple_list_item_1, myItemList);
 
         startMqtt();
 
@@ -168,24 +175,6 @@ public class MainActivity extends AppCompatActivity {
 
             startActivity(intent);
 
-//            if (mycounter == 0){
-//                myItemList.add(new ItemObject(content, dataValue, "baseline_android_black_36dp"));
-//            }
-//            else if (mycounter == 1){
-//                myItemList.add(new ItemObject(content, dataValue,"baseline_android_black_36dp"));
-//            }
-//            else if (mycounter == 2){
-//                myItemList.add(new ItemObject(content,dataValue, "baseline_android_black_36dp"));
-//            }
-//            else if (mycounter == 3){
-//                myItemList.add(new ItemObject(content, dataValue,"baseline_android_black_36dp"));
-//            }
-//            else{
-//                myItemList.add(new ItemObject(content, dataValue,"baseline_android_black_36dp"));
-//            }
-//
-//            adapter.notifyDataSetChanged();
-
             //Toast toast = Toast.makeText(context, text, duration);
             //toast.show();
             mycounter ++;
@@ -211,19 +200,37 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //int selectedItem = adapterView.getSelectedItemPosition();
 
-                String message = "1";
+                String messageON = "1";
+                String messageOFF= "0";
+                Date c = Calendar.getInstance().getTime();
+                SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+                String timestamp =  df.format(c);
 
-                if (!myItemList.get(i).getPublish().toString().equals("")) {
-                    try {
-                        MainActivity.mqttHelper.mqttAndroidClient.publish(myItemList.get(i).getPublish().toString(), new MqttMessage(message.getBytes()) );
+                if (myItemList.get(i).getActor()) {
+                    ImageView myicon = adapterView.findViewById(R.id.imageView);
 
-                    } catch (MqttException e) {
-                        e.printStackTrace();
+                    if (myItemList.get(i).getDataValue().equals("1")){
+                        try {
+                            MainActivity.mqttHelper.mqttAndroidClient.publish(myItemList.get(i).getPublishTopic().toString(), new MqttMessage(messageOFF.getBytes()));
+                            myItemList.get(i).setStatus("Published on: " + timestamp);
+
+                        } catch (MqttException e) {
+                            e.printStackTrace();
+                        }
                     }
+                    else {
+                        try {
+                            MainActivity.mqttHelper.mqttAndroidClient.publish(myItemList.get(i).getPublishTopic().toString(), new MqttMessage(messageON.getBytes()));
+                            myItemList.get(i).setStatus("Published on: " + timestamp);
 
+                        } catch (MqttException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
                     //Toast toast = Toast.makeText(getContext(), selectedItem.toString(), Toast.LENGTH_SHORT);
-                    Toast toast = Toast.makeText(getContext(), "published 1", Toast.LENGTH_SHORT);
-                    toast.show();
+//                    Toast toast = Toast.makeText(getContext(), "published 1", Toast.LENGTH_SHORT);
+//                    toast.show();
                 }
             }
         };
@@ -250,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             catch (MqttException ex){
 
-                            };
+                            }
                             myItemList.remove(myItemList.get(selectedItem));
 
                         }
@@ -267,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
                             String type = MainActivity.myItemList.get(selectedItem).getType().toString();
                             String topic = MainActivity.myItemList.get(selectedItem).getTopic().toString();
                             Boolean actor = MainActivity.myItemList.get(selectedItem).getActor();
-                            String publish = MainActivity.myItemList.get(selectedItem).getPublish();
+                            String publish = MainActivity.myItemList.get(selectedItem).getPublishTopic();
 
                             mBundle.putInt("id", id);
                             mBundle.putString("name", name);
@@ -401,20 +408,7 @@ public class MainActivity extends AppCompatActivity {
                         adapter.notifyDataSetChanged();
                     }
                 }
-//                switch (topic){
-//                    case "/sensors/temp02":{
-//                        myItemList.get(0).setDataValue(mqttMessage.toString());
-//                        //myItemList.get(0).setId(topic);
-//                        adapter.notifyDataSetChanged();
-//                        break;
-//                    }
-//                    case "/sensors/hum01":{
-//                        myItemList.get(1).setDataValue(mqttMessage.toString());
-//                        //myItemList.get(1).setId(topic);
-//                        adapter.notifyDataSetChanged();
-//                        break;
-//                    }
-//                }
+
                 //DataReceived.setText(mqttMessage.toString());
                 //myItemList.get(0).setDataValue(mqttMessage.toString());
                 //DataValue = mqttMessage.toString();

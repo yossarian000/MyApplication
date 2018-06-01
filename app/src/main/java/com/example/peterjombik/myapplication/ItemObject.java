@@ -9,9 +9,10 @@ public class ItemObject {
     private String zone;
     private String type;
     private Boolean actor;
-    private String publish;
+    private String publishtopic;
+    private String status;
 
-    public ItemObject(String id, String name, String datavalue, String imageResource, String topic, String zone, String type, Boolean actor, String publish) {
+    public ItemObject(String id, String name, String datavalue, String imageResource, String topic, String zone, String type, Boolean actor, String publishtopic, String status) {
         this.id = id;
         this.name = name;
         this.imageResource = imageResource;
@@ -20,7 +21,8 @@ public class ItemObject {
         this.zone = zone;
         this.type = type;
         this.actor = actor;
-        this.publish = publish;
+        this.publishtopic = publishtopic;
+        this. status = status;
     }
 
     public String getId() {
@@ -87,11 +89,19 @@ public class ItemObject {
         this.actor = actor;
     }
 
-    public String getPublish(){
-        return publish;
+    public String getPublishTopic(){
+        return publishtopic;
     }
 
-    public void setPublish(String publish){
-        this.publish = publish;
+    public void setPublishTopic(String publishtopic){
+        this.publishtopic = publishtopic;
+    }
+
+    public String getStatus(){
+        return status;
+    }
+
+    public void setStatus(String status){
+        this.status = status;
     }
 }

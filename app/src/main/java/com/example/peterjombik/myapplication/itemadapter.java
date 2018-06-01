@@ -2,6 +2,8 @@ package com.example.peterjombik.myapplication;
 
 import android.content.ClipData;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +16,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,13 +70,14 @@ public class itemadapter extends BaseAdapter {
             listViewHolder.textInListView = (TextView)convertView.findViewById(R.id.textView);
             listViewHolder.imageInListView = (ImageView)convertView.findViewById(R.id.imageView);
             listViewHolder.dataInListView = (TextView) convertView.findViewById(R.id.dataView);
+            listViewHolder.statusInListView = (TextView) convertView.findViewById(R.id.mything_status);
 
             listViewHolder.imageInListView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             //listViewHolder.imageInListView.setLayoutParams(new ViewGroup.LayoutParams(25,25));
 
             convertView.setTag(listViewHolder);
-
-        } else {
+        }
+        else {
             listViewHolder = (ViewHolder)convertView.getTag();
         }
 
@@ -81,6 +86,14 @@ public class itemadapter extends BaseAdapter {
             listViewHolder.imageInListView.setVisibility(View.VISIBLE);
             int imageResourceId = this.mContext.getResources().getIdentifier(myList.get(position).getImageResource(), "drawable", this.mContext.getPackageName());
             listViewHolder.imageInListView.setImageResource(imageResourceId);
+
+            if (myList.get(position).getDataValue().equals("1")){
+                listViewHolder.imageInListView.setColorFilter(Color.YELLOW);
+            }
+            else {
+                listViewHolder.imageInListView.setColorFilter(Color.WHITE);
+            }
+
         }
         else{
             listViewHolder.dataInListView.setVisibility(View.VISIBLE);
@@ -88,8 +101,8 @@ public class itemadapter extends BaseAdapter {
             listViewHolder.dataInListView.setText(myList.get(position).getDataValue());
         }
 
+        listViewHolder.statusInListView.setText(myList.get(position).getStatus());
         listViewHolder.textInListView.setText(myList.get(position).getName());
-
 
 //        int imageResourceId = this.mContext.getResources().getIdentifier(myList.get(position).getImageResource(), "drawable", this.mContext.getPackageName());
 //        listViewHolder.imageInListView.setImageResource(imageResourceId);
@@ -101,5 +114,6 @@ public class itemadapter extends BaseAdapter {
         TextView textInListView;
         ImageView imageInListView;
         TextView dataInListView;
+        TextView statusInListView;
     }
 }

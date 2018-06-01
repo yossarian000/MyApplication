@@ -98,6 +98,7 @@ public class ItemConfiguration extends AppCompatActivity {
                 actor.setChecked(true);
                 publish.setVisibility(View.VISIBLE);
                 publishinput.setVisibility(View.VISIBLE);
+                publishinput.setText(bundle.getString("publish"));
             }
             else {
                 publish.setVisibility(View.INVISIBLE);
@@ -172,7 +173,7 @@ public class ItemConfiguration extends AppCompatActivity {
         String myType = staticTypeSpinner.getSelectedItem().toString();
         String myZone = staticZoneSpinner.getSelectedItem().toString();
 
-        //noinspection SimplifiableIfStatement
+        /** On save button click */
         if (menuitemid == R.id.action_itemconfig_save) {
 
             String imgsrc = "";
@@ -204,7 +205,7 @@ public class ItemConfiguration extends AppCompatActivity {
                     MainActivity.myItemList.get(id).setType(myType);
                     MainActivity.myItemList.get(id).setActor(actor.isChecked());
                     MainActivity.myItemList.get(id).setImageResource(imgsrc);
-                    MainActivity.myItemList.get(id).setPublish(publishinput.getText().toString());
+                    MainActivity.myItemList.get(id).setPublishTopic(publishinput.getText().toString());
 
                     try {
                         //MainActivity.mqttHelper.mqttAndroidClient.subscribe("/sensors/hum01", 0);
@@ -218,7 +219,7 @@ public class ItemConfiguration extends AppCompatActivity {
                 /**creating new**/
                 else {
                     MainActivity.myItemList.add(new ItemObject("", name.getText().toString(), "",
-                            imgsrc, topic.getText().toString(), myZone, myType, actor.isChecked(), publishinput.getText().toString()));
+                            imgsrc, topic.getText().toString(), myZone, myType, actor.isChecked(), publishinput.getText().toString(), ""));
                 }
 
 
