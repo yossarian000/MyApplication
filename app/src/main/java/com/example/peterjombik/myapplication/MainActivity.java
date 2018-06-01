@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +46,7 @@ import java.util.Date;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.example.peterjombik.myapplication.R.id.fragment_gridview;
+import static com.example.peterjombik.myapplication.R.id.toolbar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -167,14 +169,16 @@ public class MainActivity extends AppCompatActivity {
             }
             editor.commit();
 
+            Intent intent = new Intent(context, Settings.class);
+
+            startActivity(intent);
+
             return true;
         }
         if (id == R.id.action_addnew) {
 
             Intent intent = new Intent(context, ItemConfiguration.class);
-
             startActivity(intent);
-
             //Toast toast = Toast.makeText(context, text, duration);
             //toast.show();
             mycounter ++;
@@ -330,9 +334,11 @@ public class MainActivity extends AppCompatActivity {
             switch (getArguments().getInt(ARG_SECTION_NUMBER))
             {
                 case 1: {
-                    rootView = inflater.inflate(R.layout.fragment_main, container, false);
-                    TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-                    textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+                    rootView = inflater.inflate(R.layout.fragment_floorplan, container, false);
+                    ImageView imgview = (ImageView) rootView.findViewById(R.id.mything_floorplan);
+                    imgview.setColorFilter(Color.WHITE);
+                    //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+                    //textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
                     break;
                 }
                 case 2: {
@@ -386,14 +392,19 @@ public class MainActivity extends AppCompatActivity {
     private void startMqtt(){
         mqttHelper = new MqttHelper(getApplicationContext());
         mqttHelper.setCallback(new MqttCallbackExtended() {
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             @Override
             public void connectComplete(boolean b, String s) {
-
+                toolbar.setSubtitle("...connected");
+                Toast toast = Toast.makeText(getApplicationContext(), "Conencted to MQTT!", Toast.LENGTH_SHORT);
+                toast.show();
             }
 
             @Override
             public void connectionLost(Throwable throwable) {
-
+                toolbar.setSubtitle("...disconnected");
+                Toast toast = Toast.makeText(getApplicationContext(), "MQTT connection lost", Toast.LENGTH_SHORT);
+                toast.show();
             }
 
             @Override

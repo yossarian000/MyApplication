@@ -26,11 +26,13 @@
         </activity>
         <activity
             android:name=".ItemConfiguration"
-            android:parentActivityName=".MainActivity">
-        </activity>
+            android:parentActivityName=".MainActivity" />
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
 
+        <activity
+            android:name=".Settings"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

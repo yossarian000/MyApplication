@@ -1,10 +1,11 @@
 <resources>
     <string name="app_name">MyThing</string>
+    <string name="app_subtitle">...waiting for connection</string>
     <string name="tab_text_1">Overview</string>
     <string name="tab_text_2">Zones</string>
     <string name="tab_text_3">Functions</string>
     <string name="action_settings">Settings</string>
-    <string name="action_addnew">Add New</string>
+    <string name="action_addnew">Add New Item</string>
     <string name="toast_addnew">you did it! - pushed</string>
     <string name="toast_cfgerr_01">Please set Topic</string>
     <string name="section_format">Hello World from section: %1$d</string>
@@ -12,6 +13,9 @@
     <string name="myPopup01">Delete...</string>
     <string name="myPopup02">Edit...</string>
     <string name="myPopup03">Info...</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
 
     <!-- Item configuration -->
     <string name="itemconfig_title">Thing configuration</string>
@@ -66,4 +70,7 @@
         <item>@string/Zonelist_04</item>
         <item>@string/Zonelist_05</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
