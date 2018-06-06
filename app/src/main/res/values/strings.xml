@@ -16,6 +16,8 @@
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
+    <string name="mqttaddress">MQTT Server</string>
+    <string name="mqttaddress_hint">server.com:port</string>
 
     <!-- Item configuration -->
     <string name="itemconfig_title">Thing configuration</string>

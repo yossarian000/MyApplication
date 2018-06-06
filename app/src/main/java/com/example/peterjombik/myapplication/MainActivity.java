@@ -37,16 +37,13 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.example.peterjombik.myapplication.R.id.fragment_gridview;
-import static com.example.peterjombik.myapplication.R.id.toolbar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -66,8 +63,9 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private int mycounter = 0;
     public static ArrayList<ItemObject> myItemList = new ArrayList<ItemObject>();
+    public static ArrayList<ZoneObject> myZoneList = new ArrayList<ZoneObject>();
     public static itemadapter adapter;
-    public static String DataValue;
+    public static zoneitemadapter zoneadapter;
 
     public static MqttHelper mqttHelper;
 
@@ -108,7 +106,14 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+//        myZoneList.add(new ZoneObject("1", "Livingroom", "ic_launcher_foreground"));
+//        myZoneList.add(new ZoneObject("1", "Kitchen", "ic_launcher_foreground"));
+//        myZoneList.add(new ZoneObject("1", "Garage", "ic_launcher_foreground"));
+
+
         adapter = new itemadapter(this, android.R.layout.simple_list_item_1, myItemList);
+
+        zoneadapter = new zoneitemadapter(this, android.R.layout.simple_list_item_1, myZoneList);
 
         startMqtt();
 
@@ -145,32 +150,25 @@ public class MainActivity extends AppCompatActivity {
         String content = new String();
         String dataValue = new String();
 
-        content = "Item " + mycounter;
-        dataValue = DataValue;
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
 
-//            ArrayList userList   = new ArrayList();
-//            userList.add(new Users());
-//            userList.add(new Users());
-            SharedPreferences prefs = getSharedPreferences("KoJo", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = prefs.edit();
-            Gson gson = new Gson();
-            String json = gson.toJson(myItemList);
-            editor.putString("MyObject", json);
-            editor.commit();
+//            SharedPreferences prefs = getSharedPreferences("KoJo", Context.MODE_PRIVATE);
+//            SharedPreferences.Editor editor = prefs.edit();
+//            Gson gson = new Gson();
+//            String json = gson.toJson(myItemList);
+//            editor.putString("MyObject", json);
+//            editor.commit();
 
-            try {
-                editor.putString("ObjectList", ObjectSerializer.serialize(myItemList));
-                //editor.putString("ObjectList", ObjectSerializer.serialize("asdasdasd"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            editor.commit();
+//            try {
+//                editor.putString("ObjectList", ObjectSerializer.serialize(myItemList));
+//                //editor.putString("ObjectList", ObjectSerializer.serialize("asdasdasd"));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            editor.commit();
 
             Intent intent = new Intent(context, Settings.class);
-
             startActivity(intent);
 
             return true;
@@ -181,7 +179,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             //Toast toast = Toast.makeText(context, text, duration);
             //toast.show();
-            mycounter ++;
             return true;
         }
 
@@ -305,8 +302,19 @@ public class MainActivity extends AppCompatActivity {
                 //Toast toast = Toast.makeText(getContext(), "longclick!", Toast.LENGTH_SHORT);
                 //toast.show();
 
-                return false;
+                return true;
             }
+        };
+
+        AdapterView.OnItemClickListener myOnZoneItemclickListener = new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                Toast toast = Toast.makeText(getContext(), "Zone: " + i, Toast.LENGTH_SHORT);
+                toast.show();
+
+            }
+
         };
 
         public PlaceholderFragment() {
@@ -342,6 +350,17 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 }
                 case 2: {
+                    rootView = inflater.inflate(R.layout.fragment_gridview, container, false);
+//                    TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+//                    textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+                    GridView gridview_zone = (GridView) rootView.findViewById(fragment_gridview);
+                    gridview_zone.setAdapter(zoneadapter);
+
+                    gridview_zone.setOnItemClickListener(myOnZoneItemclickListener);
+
+                    break;
+                }
+                case 3: {
                     //View view = inflater.inflate(R.layout.fragment_gridview, container, false);
                     //super.onCreate(savedInstanceState);
                     rootView = inflater.inflate(R.layout.fragment_gridview, container, false);
@@ -351,13 +370,6 @@ public class MainActivity extends AppCompatActivity {
 
                     gridview.setOnItemClickListener(myOnItemclickListener);
                     gridview.setOnItemLongClickListener(myOnItemLongclickListener);
-
-                    break;
-                }
-                case 3: {
-                    rootView = inflater.inflate(R.layout.fragment_main, container, false);
-                    TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-                    textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
                     break;
                 }
             }
@@ -410,20 +422,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
                 Log.w("Debug",mqttMessage.toString());
+                try {
+                    int itemlistsize = myItemList.size();
 
-                int itemlistsize = myItemList.size();
-
-                for (int i = 0; i< itemlistsize; i++){
-                    if (myItemList.get(i).getTopic().toString().equals(topic)){
-                        myItemList.get(i).setDataValue(mqttMessage.toString());
-                        adapter.notifyDataSetChanged();
+                    for (int i = 0; i < itemlistsize; i++) {
+                        if (myItemList.get(i).getTopic().toString().equals(topic)) {
+                            myItemList.get(i).setDataValue(mqttMessage.toString());
+                            adapter.notifyDataSetChanged();
+                        }
                     }
                 }
+                catch (Exception e){
 
-                //DataReceived.setText(mqttMessage.toString());
-                //myItemList.get(0).setDataValue(mqttMessage.toString());
-                //DataValue = mqttMessage.toString();
-                //adapter.notifyDataSetChanged();
+                }
             }
 
             @Override

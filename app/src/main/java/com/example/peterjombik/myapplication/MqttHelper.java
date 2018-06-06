@@ -13,7 +13,6 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.util.List;
 
 public class MqttHelper {
     public MqttAndroidClient mqttAndroidClient;

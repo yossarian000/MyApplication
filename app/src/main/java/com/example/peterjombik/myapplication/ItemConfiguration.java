@@ -2,6 +2,7 @@ package com.example.peterjombik.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,8 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
 
@@ -224,6 +227,29 @@ public class ItemConfiguration extends AppCompatActivity {
 
 
                 MainActivity.adapter.notifyDataSetChanged();
+
+                int zonelistsize = MainActivity.myZoneList.size();
+
+                if (zonelistsize == 0){
+                    MainActivity.myZoneList.add(new ZoneObject("0", myZone, "outline_security_24"));
+                    MainActivity.zoneadapter.notifyDataSetChanged();
+                }
+                else {
+                    for (int i = 0; i < zonelistsize; i++) {
+                        if (!MainActivity.myZoneList.get(i).getZone().contains(myZone)) {
+                            MainActivity.myZoneList.add(new ZoneObject(Integer.toString(i), myZone, "outline_security_24"));
+                            MainActivity.zoneadapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+
+                SharedPreferences prefs = getSharedPreferences("KoJo", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                Gson gson = new Gson();
+                String json = gson.toJson(MainActivity.myItemList);
+                editor.putString("MyObject", json);
+                editor.commit();
+
                 finish();
             }
 

@@ -29,8 +29,8 @@ public class itemadapter extends BaseAdapter {
 
     //private ArrayAdapter<ItemObject> myList;
 
-    public itemadapter(Context c, int simple_list_item_1, List<ItemObject> images) {
-    //public itemadapter(Context c, ArrayAdapter<ItemObject> images) {
+        public itemadapter(Context c, int simple_list_item_1, List<ItemObject> images) {
+        //public itemadapter(Context c, ArrayAdapter<ItemObject> images) {
         this.mContext = c;
         layoutinflater =(LayoutInflater)c.getSystemService(c.LAYOUT_INFLATER_SERVICE);
         myList = images;
