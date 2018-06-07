@@ -93,7 +93,6 @@ public class itemadapter extends BaseAdapter {
             else {
                 listViewHolder.imageInListView.setColorFilter(Color.WHITE);
             }
-
         }
         else{
             listViewHolder.dataInListView.setVisibility(View.VISIBLE);

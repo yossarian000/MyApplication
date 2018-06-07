@@ -23,7 +23,8 @@ public class zoneitemadapter extends BaseAdapter {
 
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        itemadapter.ViewHolder listViewHolder;
+        zoneitemadapter.ViewHolder listViewHolder;
+
 
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
@@ -32,7 +33,7 @@ public class zoneitemadapter extends BaseAdapter {
 //            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 //            imageView.setPadding(8, 8, 8, 8);
 
-            listViewHolder = new itemadapter.ViewHolder();
+            listViewHolder = new zoneitemadapter.ViewHolder();
             convertView = layoutinflater.inflate(R.layout.mything_item, parent, false);
             listViewHolder.textInListView = (TextView)convertView.findViewById(R.id.textView);
             listViewHolder.imageInListView = (ImageView)convertView.findViewById(R.id.imageView);
@@ -45,12 +46,17 @@ public class zoneitemadapter extends BaseAdapter {
             convertView.setTag(listViewHolder);
         }
         else {
-            listViewHolder = (itemadapter.ViewHolder)convertView.getTag();
+            listViewHolder = (zoneitemadapter.ViewHolder)convertView.getTag();
         }
+
 
         listViewHolder.dataInListView.setVisibility(View.INVISIBLE);
         listViewHolder.textInListView.setText(myZones.get(position).getZone());
         listViewHolder.statusInListView.setText(myZones.get(position).getId());
+
+        int imageResourceId = this.mContext.getResources().getIdentifier(myZones.get(position).getImageResource(), "drawable", this.mContext.getPackageName());
+        listViewHolder.imageInListView.setImageResource(imageResourceId);
+
 
         return convertView;
     }

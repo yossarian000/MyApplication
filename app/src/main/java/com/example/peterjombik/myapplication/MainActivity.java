@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -26,7 +25,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -64,8 +62,12 @@ public class MainActivity extends AppCompatActivity {
     private int mycounter = 0;
     public static ArrayList<ItemObject> myItemList = new ArrayList<ItemObject>();
     public static ArrayList<ZoneObject> myZoneList = new ArrayList<ZoneObject>();
+    public static ArrayList<ItemObject> myZoneItems = new ArrayList<ItemObject>();
     public static itemadapter adapter;
+    public static itemadapter zoneitemsadapter;
     public static zoneitemadapter zoneadapter;
+
+    private static ViewPager viewPagerStatus;
 
     public static MqttHelper mqttHelper;
 
@@ -93,27 +95,33 @@ public class MainActivity extends AppCompatActivity {
         try {
             SharedPreferences appsharedprefs = getSharedPreferences("KoJo", Context.MODE_PRIVATE);
             Gson gson = new Gson();
-            String json = appsharedprefs.getString("MyObject", "");
-            Type type = new TypeToken<ArrayList<ItemObject>>() {
+            String item_json = appsharedprefs.getString("MyObject", "");
+            String zone_json = appsharedprefs.getString("MyZone", "");
+            Type item_type = new TypeToken<ArrayList<ItemObject>>() {
             }.getType();
-            ArrayList<ItemObject> test = gson.fromJson(json, type);
+            Type zone_type = new TypeToken<ArrayList<ZoneObject>>() {
+            }.getType();
+
+            ArrayList<ItemObject> itemlist = gson.fromJson(item_json, item_type);
+            ArrayList<ZoneObject> zonelist = gson.fromJson(zone_json, zone_type);
             //userList = (ArrayList<ItemObject>) ObjectSerializer.deserialize(prefs.getString("ObjectList", ObjectSerializer.serialize(new ArrayList<ItemObject>())));
-            if (test != null) {
-                myItemList = test;
+            if (itemlist != null) {
+                myItemList = itemlist;
+            }
+            if (zonelist != null) {
+                myZoneList = zonelist;
             }
         }
         catch (ClassCastException e){
 
         }
 
-//        myZoneList.add(new ZoneObject("1", "Livingroom", "ic_launcher_foreground"));
-//        myZoneList.add(new ZoneObject("1", "Kitchen", "ic_launcher_foreground"));
-//        myZoneList.add(new ZoneObject("1", "Garage", "ic_launcher_foreground"));
+//        myZoneItems.add(myItemList.get(0));
 
 
         adapter = new itemadapter(this, android.R.layout.simple_list_item_1, myItemList);
-
         zoneadapter = new zoneitemadapter(this, android.R.layout.simple_list_item_1, myZoneList);
+        zoneitemsadapter = new itemadapter(this, android.R.layout.simple_list_item_1, myZoneItems);
 
         startMqtt();
 
@@ -128,6 +136,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        Context context = getApplicationContext();
+//        int text = R.string.toast_addnew;
+//        int duration = Toast.LENGTH_SHORT;
+//
+//        Toast toast = Toast.makeText(context, "back is back", duration);
+//        toast.show();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -152,25 +171,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-
-//            SharedPreferences prefs = getSharedPreferences("KoJo", Context.MODE_PRIVATE);
-//            SharedPreferences.Editor editor = prefs.edit();
-//            Gson gson = new Gson();
-//            String json = gson.toJson(myItemList);
-//            editor.putString("MyObject", json);
-//            editor.commit();
-
-//            try {
-//                editor.putString("ObjectList", ObjectSerializer.serialize(myItemList));
-//                //editor.putString("ObjectList", ObjectSerializer.serialize("asdasdasd"));
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            editor.commit();
-
             Intent intent = new Intent(context, Settings.class);
             startActivity(intent);
-
             return true;
         }
         if (id == R.id.action_addnew) {
@@ -306,15 +308,27 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+
         AdapterView.OnItemClickListener myOnZoneItemclickListener = new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                Toast toast = Toast.makeText(getContext(), "Zone: " + i, Toast.LENGTH_SHORT);
-                toast.show();
+                //viewPagerStatus = ViewPager.
+                final int selectedItem = ((int) adapterView.getItemIdAtPosition(i));
+                Intent intent = new Intent(getContext(), ZoneObjectView.class);
+                Bundle mBundle = new Bundle();
 
+                Integer id = selectedItem;
+                String zone = MainActivity.myZoneList.get(selectedItem).getZone().toString();
+
+                mBundle.putString("zone", zone);
+
+                intent.putExtras(mBundle);
+
+                startActivity(intent);
+//              Toast toast = Toast.makeText(getContext(), "Zone: " + i, Toast.LENGTH_SHORT);
+//              toast.show();
             }
-
         };
 
         public PlaceholderFragment() {
@@ -333,8 +347,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         View rootView;
-
-
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {

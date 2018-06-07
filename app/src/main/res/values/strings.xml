@@ -19,6 +19,9 @@
     <string name="mqttaddress">MQTT Server</string>
     <string name="mqttaddress_hint">server.com:port</string>
 
+    <!-- ZoneView -->
+    <string name="ZoneView_title">Zone</string>
+
     <!-- Item configuration -->
     <string name="itemconfig_title">Thing configuration</string>
 

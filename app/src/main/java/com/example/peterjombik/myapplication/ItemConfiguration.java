@@ -180,6 +180,7 @@ public class ItemConfiguration extends AppCompatActivity {
         if (menuitemid == R.id.action_itemconfig_save) {
 
             String imgsrc = "";
+            Boolean zonefound = false;
 
             switch (myType) {
                 case "Lamp":
@@ -236,18 +237,27 @@ public class ItemConfiguration extends AppCompatActivity {
                 }
                 else {
                     for (int i = 0; i < zonelistsize; i++) {
-                        if (!MainActivity.myZoneList.get(i).getZone().contains(myZone)) {
-                            MainActivity.myZoneList.add(new ZoneObject(Integer.toString(i), myZone, "outline_security_24"));
-                            MainActivity.zoneadapter.notifyDataSetChanged();
+                        if (MainActivity.myZoneList.get(i).getZone().contains(myZone)) {
+                            zonefound = true;
+//                            MainActivity.myZoneList.add(new ZoneObject(Integer.toString(i), myZone, "outline_security_24"));
+//                            MainActivity.zoneadapter.notifyDataSetChanged();
                         }
+                    }
+
+                    if (!zonefound){
+                            MainActivity.myZoneList.add(new ZoneObject("as", myZone, "outline_security_24"));
+                            MainActivity.zoneadapter.notifyDataSetChanged();
+
                     }
                 }
 
                 SharedPreferences prefs = getSharedPreferences("KoJo", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
                 Gson gson = new Gson();
-                String json = gson.toJson(MainActivity.myItemList);
-                editor.putString("MyObject", json);
+                String item_json = gson.toJson(MainActivity.myItemList);
+                String zone_json = gson.toJson(MainActivity.myZoneList);
+                editor.putString("MyObject", item_json);
+                editor.putString("MyZone", zone_json);
                 editor.commit();
 
                 finish();
